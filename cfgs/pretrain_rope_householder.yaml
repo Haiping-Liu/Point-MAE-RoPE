@@ -28,13 +28,13 @@ model : {
   transformer_config: {
     mask_ratio: 0.6,
     mask_type: 'rand',
-    trans_dim: 384,
-    encoder_dims: 384,
+    trans_dim: 432,  # Changed to be divisible by 6 for RoPE compatibility
+    encoder_dims: 432,
     depth: 12,
     drop_path_rate: 0.1,
-    num_heads: 8,
+    num_heads: 6,  # 6 heads with head_dim=72
     decoder_depth: 4,
-    decoder_num_heads: 8,
+    decoder_num_heads: 6,
     learner_type: 'householder',  # Householder learnable RoPE
   },
   }

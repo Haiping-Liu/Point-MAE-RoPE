@@ -376,7 +376,14 @@ class PointTransformer_RoPE(nn.Module):
             nn.Linear(128, self.trans_dim)
         )
 
-        self.learner_type = getattr(config, 'learner_type', 'givens')
+        # Get learner_type from config, must be explicitly set
+        if not hasattr(config, 'learner_type'):
+            raise ValueError(
+                "learner_type must be specified in config for PointTransformer_RoPE!\n"
+                "Options: 'standard', 'cayley', 'givens', 'householder'"
+            )
+        self.learner_type = config.learner_type
+        print_log(f'[PointTransformer_RoPE] Using learner_type: {self.learner_type}', logger='Transformer')
         dpr = [x.item() for x in torch.linspace(0, self.drop_path_rate, self.depth)]
         self.blocks = TransformerEncoderCLS(
             embed_dim=self.trans_dim,
@@ -426,6 +433,27 @@ class PointTransformer_RoPE(nn.Module):
                 elif k.startswith('base_model'):
                     base_ckpt[k[len('base_model.'):]] = base_ckpt[k]
                     del base_ckpt[k]
+
+            # Check if using RoPE with learnable transformations
+            if self.learner_type in ['cayley', 'householder', 'givens']:
+                # Check if Q_learner parameters exist in checkpoint
+                q_learner_keys = [k for k in base_ckpt.keys() if 'Q_learner' in k]
+                if not q_learner_keys:
+                    raise ValueError(
+                        f"\n[ERROR] No Q_learner parameters found in checkpoint!\n"
+                        f"You are using learner_type='{self.learner_type}' which requires Q_learner parameters.\n"
+                        f"This checkpoint might be from:\n"
+                        f"  1. A standard (non-RoPE) Point-MAE model\n"
+                        f"  2. A RoPE model with learner_type='standard' (no Q_learner)\n"
+                        f"\nPlease ensure you're loading a checkpoint from a {self.learner_type} RoPE pretrained model."
+                    )
+                else:
+                    print_log(f'[Transformer] Found {len(q_learner_keys)} Q_learner parameters for {self.learner_type}', logger='Transformer')
+                    # Show first few Q_learner parameters for verification
+                    for k in sorted(q_learner_keys)[:3]:
+                        print_log(f'  - {k}', logger='Transformer')
+                    if len(q_learner_keys) > 3:
+                        print_log(f'  ... and {len(q_learner_keys) - 3} more', logger='Transformer')
 
             incompatible = self.load_state_dict(base_ckpt, strict=False)
 

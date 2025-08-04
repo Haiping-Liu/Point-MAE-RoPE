@@ -21,7 +21,7 @@ dataset : {
             others: {subset: 'test', npoints: 1024}}}
 
 model : {
-  NAME: Point_MAE_RoPE,
+  NAME: Point_MAE,
   group_size: 32,
   num_group: 64,
   loss: cdl2,
@@ -32,10 +32,9 @@ model : {
     encoder_dims: 432,
     depth: 12,
     drop_path_rate: 0.1,
-    num_heads: 6,  # 6 heads with head_dim=72
+    num_heads: 6,
     decoder_depth: 4,
     decoder_num_heads: 6,
-    learner_type: 'standard',  # Options: 'standard', 'cayley', 'givens', 'householder'
   },
   }
 
