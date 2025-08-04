@@ -94,3 +94,11 @@ ckpts
 
 # Large files
 modelnet40.zip
+
+# Data files
+*.dat
+*.h5
+*.hdf5
+modelnet40_shape_names.txt
+modelnet40_test.txt
+modelnet40_train.txt

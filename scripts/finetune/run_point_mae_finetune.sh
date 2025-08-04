@@ -40,7 +40,7 @@ echo "=== Starting Point-MAE Fine-tuning ==="
 
 # Run Point-MAE fine-tuning on ModelNet40
 python main.py \
-    --config cfgs/finetune_modelnet.yaml \
+    --config cfgs/finetune/finetune_modelnet.yaml \
     --finetune_model \
     --exp_name point_mae_finetune_modelnet_$(date +%Y%m%d_%H%M%S) \
     --ckpts <path/to/pretrained/model> \
