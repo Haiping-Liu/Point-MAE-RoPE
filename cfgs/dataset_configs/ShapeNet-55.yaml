@@ -1,0 +1,4 @@
+NAME: ShapeNet
+DATA_PATH: /ceph/hpc/data/b2025b05-014-users/haiping_env/ShapeNet55/Shapenet
+N_POINTS: 8192
+PC_PATH: /ceph/hpc/data/b2025b05-014-users/haiping_env/ShapeNet55/shapenet_pc
